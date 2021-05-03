@@ -20,10 +20,6 @@ public class CameraControllerScript : MonoBehaviour
     public Animator cameraStateMachine;
     public AnimationClip VF_Toggle_Clip;
     
-    int apertureNotch;
-    int focusRingNotch;
-    int zoomNotch;
-
     //variables
     bool isTakingPicture = false;
 
@@ -49,9 +45,16 @@ public class CameraControllerScript : MonoBehaviour
     public GameObject customPass;
     bool isVFAxisInUse = false;
 
-    float[] zoomNotchValues = { 5f, 10f, 15f, 20f, 30f, 100f };
-    float[] focusRingValues = { 0.5f, 1f, 5f, 15f, 30f, float.MaxValue };
-    float[] apertureValues = { 3.5f, 4f, 5.6f, 8f, 16f, 22f };
+    bool isLookingThroughVF = false;
+
+    float[] zoomNotchValues = { 18f, 20f, 24f, 35f, 45f, 50f, 55f };
+    float[] focusRingValues = { 1f, 2f, 3f, 5f, 8f, 11f, Mathf.Infinity }; 
+    float[] apertureValues = { 3.5f, 4f, 4.5f, 5f, 5.6f, 6.3f, 7.1f };
+    
+    //saves where the current notch is on
+    int apertureNotch;
+    int focusRingNotch;
+    int zoomNotch;
 
     static string ScreenShotName(int width, int height)
     {
@@ -65,6 +68,7 @@ public class CameraControllerScript : MonoBehaviour
     void Start()
     {
         SetInitialCameraNotches();
+
         Enemy_Renderer = Enemy.GetComponent<Renderer>();
         damageZone.GetComponent<MeshFilter>().mesh = new Mesh();
     }
@@ -74,6 +78,10 @@ public class CameraControllerScript : MonoBehaviour
         apertureNotch = 2;
         focusRingNotch = 4;
         zoomNotch = 6;
+
+        ApertureChange();
+        ZoomChange();
+        FocusRingChange();
     }
 
     void Update()
@@ -91,6 +99,8 @@ public class CameraControllerScript : MonoBehaviour
     // Calculates near and far plane then modifies Damage zone accordingly
     void ChangeDamageZone ()
     {
+        float superLargeValue = 100000;
+
         //u is in meters, N is in mm, f is in mm, coc is in mm
         float N = DSLR_cam.GetComponent<HDAdditionalCameraData>().physicalParameters.aperture;
         float f = DSLR_cam.focalLength;
@@ -110,16 +120,20 @@ public class CameraControllerScript : MonoBehaviour
 
         //set focus far plane to as a far as possible
         if (focusFarPlane <= 0)
-            focusFarPlane = float.MaxValue;
+            focusFarPlane = superLargeValue;
 
         //center of DOF is called focal plane
         float centerOfDamageZone = (focusNearPlane + focusFarPlane) / 2;
         float sizeOfDamageZone = focusFarPlane - focusNearPlane;
 
-        //Change Damage zones based on calculation
-        //todo: fix this?
-        //DamageZones.transform.localPosition = new Vector3(DamageZones.transform.localPosition.x, DamageZones.transform.localPosition.y, centerOfDamageZone);
-        //DamageZones.transform.localScale = new Vector3(DamageZones.transform.localScale.x, DamageZones.transform.localScale.y, sizeOfDamageZone);
+        Debug.Log(DSLR_cam.aspect);
+        float fieldOfViewHorizontal = Camera.VerticalToHorizontalFieldOfView(DSLR_cam.fieldOfView, DSLR_cam.aspect);
+
+        float x_offset_near = focusNearPlane * (float) Math.Tan(fieldOfViewHorizontal / 2);
+        float x_offset_far = focusFarPlane * (float) Math.Tan(fieldOfViewHorizontal / 2);
+
+        float y_offset_near = focusNearPlane * (float) Math.Tan(DSLR_cam.fieldOfView / 2);
+        float y_offset_far = focusFarPlane * (float) Math.Tan(DSLR_cam.fieldOfView / 2);
 
         //vertices of trapezoidal prism
         /*notated as min / max of each type
@@ -127,29 +141,16 @@ public class CameraControllerScript : MonoBehaviour
           *y coordinate: bottom / top = b or t
           *z coordinate: near / far = n or f
           */
-
-        float aspectRatio = Screen.height / Screen.width;
-        float fieldOfViewHorizontal = Camera.VerticalToHorizontalFieldOfView(DSLR_cam.fieldOfView, aspectRatio);
-        
-        float x_offset_near = focusNearPlane * (float) Math.Tan(fieldOfViewHorizontal / 2);
-        float x_offset_far = focusFarPlane * (float) Math.Tan(fieldOfViewHorizontal / 2);
-
-        float y_offset_near = focusNearPlane * (float) Math.Tan(DSLR_cam.fieldOfView / 2);
-        float y_offset_far = focusFarPlane * (float) Math.Tan(DSLR_cam.fieldOfView / 2);
-
-        Vector3 lbn = new Vector3(- x_offset_near, - y_offset_near, focusNearPlane);
-        Vector3 lbf = new Vector3(- x_offset_far, - y_offset_far, focusFarPlane);
-        Vector3 ltn = new Vector3(- x_offset_near, + y_offset_near, focusNearPlane);
-        Vector3 ltf = new Vector3(- x_offset_far, + y_offset_far, focusFarPlane);
-
-        Vector3 rbn = new Vector3(+ x_offset_near, - y_offset_near,focusNearPlane);
-        Vector3 rbf = new Vector3(+ x_offset_far, - y_offset_far, focusFarPlane);
-        Vector3 rtn = new Vector3(+ x_offset_near, + y_offset_near, focusNearPlane);
-        Vector3 rtf = new Vector3(+ x_offset_far, + y_offset_far, focusFarPlane);
-
         Vector3[] vertices = new Vector3[8] {
-            lbn, lbf, ltn, ltf, rbn, rbf, rtn, rtf
-        };
+            new Vector3(-x_offset_near, -y_offset_near, focusNearPlane), //lbn
+            new Vector3(-x_offset_far,  -y_offset_far,  focusFarPlane),  //lbf
+            new Vector3(-x_offset_near, +y_offset_near, focusNearPlane), //ltn
+            new Vector3(-x_offset_far,  +y_offset_far,  focusFarPlane),  //ltf
+            new Vector3(+x_offset_near, -y_offset_near, focusNearPlane), //rbn
+            new Vector3(+x_offset_far,  -y_offset_far,  focusFarPlane),  //rbf     
+            new Vector3(+x_offset_near, +y_offset_near, focusNearPlane), //rtn    
+            new Vector3(+x_offset_far,  +y_offset_far,  focusFarPlane)   //rtf      
+        };                                                                   
 
         int[] triangles = new int[] {
             0, 1, 2,
@@ -167,8 +168,11 @@ public class CameraControllerScript : MonoBehaviour
         };
 
         //todo: fix the math here
-        //damageZone.GetComponent<MeshFilter>().mesh.vertices = vertices;
-        //damageZone.GetComponent<MeshFilter>().mesh.triangles = triangles;
+
+        Mesh mesh = damageZone.GetComponent<MeshFilter>().mesh;
+        mesh.Clear();
+        mesh.vertices = vertices;
+        mesh.triangles = triangles;
     }
 
     void ScrollControls() {
@@ -187,7 +191,6 @@ public class CameraControllerScript : MonoBehaviour
     {
         zoomNotch += (int)Input.mouseScrollDelta.y;
         zoomNotch = Mathf.Clamp(zoomNotch, 0, 5);
-
         DSLR_cam.focalLength = zoomNotchValues[zoomNotch];
     }
 
@@ -195,17 +198,14 @@ public class CameraControllerScript : MonoBehaviour
     {
         focusRingNotch += (int) Input.mouseScrollDelta.y;
         focusRingNotch = Mathf.Clamp(focusRingNotch, 0, 5);
-
         if (postProcess.TryGet<DepthOfField>(out var DoF))
             DoF.focusDistance.value = focusRingValues[focusRingNotch];
     }
 
     public void ApertureChange()
     {
-        //todo: confirm that this works properly
         apertureNotch += (int)Input.mouseScrollDelta.y;
         apertureNotch = Mathf.Clamp(apertureNotch, 0, 5);
-
         DSLR_cam.GetComponent<HDAdditionalCameraData>().physicalParameters.aperture = apertureValues [apertureNotch]; 
     }
 
@@ -220,19 +220,22 @@ public class CameraControllerScript : MonoBehaviour
                 cameraStateMachine.SetBool("isRightClicking", !cameraStateMachine.GetBool("isRightClicking"));
 
                 //swap active camera
-                if (DSLR_cam.targetTexture)
-                {
-                    //active camera switches to DSLR
-                    StartCoroutine(SwitchToDSLRView());
-                }
-                else
+                if (isLookingThroughVF)
                 {
                     //active camera switches to character
                     DSLR_cam.targetTexture = Photo_Result;
                     Player_cam.targetDisplay = 0;
                     DSLR_cam.targetDisplay = 1;
 
+                    //reenables DamageZone
                     damageZone.GetComponent<MeshRenderer>().enabled = true;
+
+                    isLookingThroughVF = false;
+                }
+                else
+                {
+                    //active camera switches to DSLR
+                    StartCoroutine(SwitchToDSLRView());
                 }
             }
         }
@@ -248,22 +251,40 @@ public class CameraControllerScript : MonoBehaviour
         DSLR_cam.targetDisplay = 0;
         Player_cam.targetDisplay = 1;
 
+        isLookingThroughVF = true;
+
+        //removes damage zone from view when looking through VF
         damageZone.GetComponent<MeshRenderer>().enabled = false;
     }
 
     public void TakePicture()
     {
-        //todo: change to shutter button
-        isTakingPicture = Input.GetMouseButtonDown(0);
+        //todo: change to shutter button Axis input manager
+
+        //prevents user from taking pictures while changing views
+        if (Input.GetMouseButtonDown(0))
+        {
+            //if transitioning to or in a transition state to move, you can't take a picture
+            if (cameraStateMachine.GetCurrentAnimatorStateInfo(0).IsName("DSLR_ScopeMove") ||
+                cameraStateMachine.GetCurrentAnimatorStateInfo(0).IsName("DSLR_ScopeMove_Reverse") ||
+                cameraStateMachine.GetAnimatorTransitionInfo(0).IsName("DSLR_UnscopedIdle -> DSLR_ScopeMove") ||
+                cameraStateMachine.GetAnimatorTransitionInfo(0).IsName("DSLR_ScopedIdle -> DSLR_ScopeMove_Reverse")
+               )
+                isTakingPicture = false;
+            else
+                isTakingPicture = true;
+        }
+
         if (isTakingPicture)
         {
             audioSource.PlayOneShot(shutterSFX);
+            //todo: change this back
             customPass.SetActive(true);
 
             if (isSavingShots)
             {
-                int resolutionWidth = 256;
-                int resolutionHeight = 256;
+                int resolutionWidth = Screen.width;
+                int resolutionHeight = Screen.height;
 
                 RenderTexture rt = new RenderTexture(resolutionWidth, resolutionHeight, 24);
                 DSLR_cam.targetTexture = rt;
@@ -273,8 +294,10 @@ public class CameraControllerScript : MonoBehaviour
 
                 screenShot.ReadPixels(new Rect(0, 0, resolutionWidth, resolutionHeight), 0, 0);
 
-                //needs to be conditional based on viewfinder state
-                DSLR_cam.targetTexture = null;
+                if (isLookingThroughVF)
+                    DSLR_cam.targetTexture = null;
+                else
+                    DSLR_cam.targetTexture = Photo_Result;
                 RenderTexture.active = null; // JC: added to avoid errors
 
                 Destroy(rt);
@@ -284,120 +307,20 @@ public class CameraControllerScript : MonoBehaviour
 
                 //somewhere here attach screenshot texture to photo result
             }
-            ScreenSpaceOfEnemyCalculation();
+            //todo: ScreenSpaceOfEnemyCalculation();
             StartCoroutine(ToggleFlash());
 
             isTakingPicture = false;
         }
     }
 
-    //should return float percent of the enemy bounds passed into it
-    void ScreenSpaceOfEnemyCalculation(/*GameObject Enemey*/)
-    {
-        //todo: make it accept an array of enemies
-
-        /* Gets bounds of enemy
-         * notated as min/max of each type
-         * x coordinate: left/right = l or r
-         * y coordinate: bottom/top = b or t
-         * z coordinate: near/far = n or f
-         */
-
-        float left = Enemy_Renderer.bounds.min.x;
-        float bottom = Enemy_Renderer.bounds.min.y;
-        float near = Enemy_Renderer.bounds.min.z;
-
-        float right = Enemy_Renderer.bounds.max.x;
-        float top = Enemy_Renderer.bounds.max.y;
-        float far = Enemy_Renderer.bounds.max.z;
-
-        Vector3 lbn = new Vector3(left, bottom, near);
-        Vector3 lbf = new Vector3(left, bottom, far);
-        Vector3 ltn = new Vector3(left, top, near);
-        Vector3 ltf = new Vector3(left, top, far);
-
-        Vector3 rbn = new Vector3(right, bottom, near);
-        Vector3 rbf = new Vector3(right, bottom, far);
-        Vector3 rtn = new Vector3(right, top, near);
-        Vector3 rtf = new Vector3(right, top, far);
-
-        lbn = DSLR_cam.WorldToScreenPoint(lbn);
-        lbf = DSLR_cam.WorldToScreenPoint(lbf);
-        ltn = DSLR_cam.WorldToScreenPoint(ltn);
-        ltf = DSLR_cam.WorldToScreenPoint(ltf);
-
-        rbn = DSLR_cam.WorldToScreenPoint(rbn);
-        rbf = DSLR_cam.WorldToScreenPoint(rbf);
-        rtn = DSLR_cam.WorldToScreenPoint(rtn);
-        rtf = DSLR_cam.WorldToScreenPoint(rtf);
-
-        //find highest/lowest X/Y for each vector
-        float[] X_values = new float[8] {
-            lbn.x, lbf.x, ltn.x, ltf.x, rbn.x, rbf.x, rtn.x, rtf.x
-        };
-
-        float[] Y_values = new float[8] {
-            lbn.y, lbf.y, ltn.y, ltf.y, rbn.y, rbf.y, rtn.y, rtf.y
-        };
-
-        float smallest_X = Mathf.Min(X_values);
-        float smallest_Y = Mathf.Min(Y_values);
-
-        float biggest_X = Mathf.Max(X_values);
-        float biggest_Y = Mathf.Max(Y_values);
-
-        float rectX = smallest_X;
-        float rectY = Screen.height - biggest_Y;
-        float rectW = biggest_X - smallest_X;
-        float rectH = biggest_Y - smallest_Y;
-
-        //check if enemy is visible in viewport
-        isEnemyVisible = (
-            (rectX <= -rectW ||         //off sides left
-             rectX >= Screen.width) &&  //off sides right
-            (rectY <= rectH ||          //off sides up
-             rectY >= Screen.height)    //off sides bottom
-            ) ? false : true;
-
-        //use clamp to make sure the box is not larger than the screen
-
-        //rectW = Mathf.Clamp(rectW, 0, Screen.width);
-        //rectH = Mathf.Clamp(rectH, 0, Screen.height);
-        //
-        //rectX = Mathf.Clamp(rectX, 0, rectW);
-        //rectY = Mathf.Clamp(rectY, 0, rectH);
-
-        // use screen.height - biggest because the GUI layer and the Screen layer have different starting points for coordinates
-
-        redEnemyRect = new Rect(rectX, rectY, rectW, rectH);
-
-        //Debug.Log("rect: " + redEnemyRect);
-
-        if (isEnemyVisible)
-        {
-            //bounds area divided by Screen Area to get percentage of screen taken up by the shot, should be between 0 and 1
-            float relativePercent = (redEnemyRect.width * redEnemyRect.height) / (Screen.width * Screen.height);
-            damageEnemiesScript.TakeDamage(relativePercent * 100);
-        }
-
-        //Debug.Log("Percent On Screen: " + relativePercent);
-    }
-
-    private void OnGUI()
-    {
-        if (isEnemyVisible /* && isTakingPicture */)
-        {
-            GUI.Box(redEnemyRect, "Enemy");
-        }
-    }
-
     IEnumerator ToggleFlash()
     {
         flash.enabled = true;
-        yield return new WaitForSeconds(flashDuration);
+        yield return new WaitForSeconds(flashDuration / 60);
         flash.enabled = false;
         customPass.SetActive(false);
 
-        //if an enemy is visisble by DSLR_cam then run screen space calc
+        //todo: if an enemy is visisble by DSLR_cam then run screen space calc
     }
 }

@@ -4,15 +4,22 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    public static GameManager Instance;
+
+    //makes sure there is only one game manager in the scene at any time
+    private void Awake()
     {
-        
+        if (Instance == null)
+            Instance = this;
+        else if (Instance != this)
+            Destroy(this);
     }
 
-    // Update is called once per frame
-    void Update()
+    public static string ScreenShotName(int width, int height)
     {
-        
+        return string.Format("{0}/screenshots/screen_{1}x{2}_{3}.png",
+                             Application.dataPath,
+                             width, height,
+                             System.DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss"));
     }
 }
