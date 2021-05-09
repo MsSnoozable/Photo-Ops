@@ -148,11 +148,9 @@ MonoBehaviour:
       enableFptlForForwardOpaque: 0
       enableBigTilePrepass: 0
       isFptlEnabled: 0
-  m_RenderPipelineResources: {fileID: 11400000, guid: 3ce144cff5783da45aa5d4fdc2da14b7,
-    type: 2}
+  m_RenderPipelineResources: {fileID: 11400000, guid: 3ce144cff5783da45aa5d4fdc2da14b7, type: 2}
   m_RenderPipelineRayTracingResources: {fileID: 0}
-  m_DefaultVolumeProfile: {fileID: 11400000, guid: 5bbe5bb3d8d690e4093168a26042435e,
-    type: 2}
+  m_DefaultVolumeProfile: {fileID: 11400000, guid: 5bbe5bb3d8d690e4093168a26042435e, type: 2}
   m_LensAttenuation: 0
   m_UseRenderGraph: 1
   m_DefaultLookDevProfile: {fileID: 0}
@@ -442,8 +440,8 @@ MonoBehaviour:
   m_DefaultMaterialQualityLevel: 4
   diffusionProfileSettings: {fileID: 0}
   diffusionProfileSettingsList:
-  - {fileID: 11400000, guid: c0c1401058c3c754fb448deb4b049e79, type: 2}
-  - {fileID: 11400000, guid: 1ca4be64722f74046b7b0fa678dc98b0, type: 2}
+  - {fileID: 11400000, guid: 37012e44ebb908b4f9b707573449e441, type: 2}
+  - {fileID: 11400000, guid: badb15c4397a1a94d9003e76b542958b, type: 2}
   beforeTransparentCustomPostProcesses: []
   beforeTAACustomPostProcesses: []
   beforePostProcessCustomPostProcesses: []
