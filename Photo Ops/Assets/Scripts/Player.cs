@@ -6,14 +6,14 @@ public class Player : MonoBehaviour
 {
     CharacterController cc;
     [SerializeField] GameObject head;
-    [SerializeField] Transform groundCheck;
     [SerializeField] Camera cam;
     [SerializeField] float interactDistance;
     [SerializeField] float crouchingHeight;
     private float standingHeight;
     [SerializeField] LayerMask IgnoreRaycastLayer;
-
+    [SerializeField] Transform Body;
     [SerializeField] GameObject interactPopupText;
+    [SerializeField] Transform groundCheck;
 
     [Header("Values")]
     public float moveSpeed;
@@ -37,7 +37,7 @@ public class Player : MonoBehaviour
         cc = GetComponent<CharacterController>();
         Cursor.lockState = CursorLockMode.Locked;
 
-        standingHeight = GetComponent<CapsuleCollider>().height;
+        standingHeight = Body.localScale.y;
     }
 
     // Update is called once per frame
@@ -53,14 +53,16 @@ public class Player : MonoBehaviour
 
     void Crouch ()
     {
-        if (Input.GetButton("Crouch"))
-        {
-            GetComponent<CapsuleCollider>().height = crouchingHeight;
-        }
-        else if (Input.GetButtonUp("Crouch"))
-        {
-            GetComponent<CapsuleCollider>().height = standingHeight;
-        }
+        //if (Input.GetButton("Crouch"))
+        //{
+        //    Body.localScale = new Vector3(Body.localScale.x, standingHeight, Body.localScale.z);
+        //    Body.gameObject.GetComponent<CapsuleCollider>().height = 1;
+        //}
+        //else if (Input.GetButtonUp("Crouch"))
+        //{
+        //    Body.localScale = new Vector3(Body.localScale.x, crouchingHeight, Body.localScale.z);
+        //    Body.gameObject.GetComponent<CapsuleCollider>().height = 1;
+        //}
     }
 
     void Gravity()
@@ -69,7 +71,7 @@ public class Player : MonoBehaviour
         isGrounded = Physics.CheckSphere(groundCheck.position, jumpDistanceLenience, groundLayer);
 
         if (isGrounded && currentVerticalVelocity.y < 0)
-            currentVerticalVelocity.y = 0;
+            currentVerticalVelocity.y = -2f; //-2 fixes issue where player wasn't fully touching the ground 
         
         currentVerticalVelocity.y += fallSpeed * Time.deltaTime;
         cc.Move(currentVerticalVelocity * Time.deltaTime);

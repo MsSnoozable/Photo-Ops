@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -19,7 +19,10 @@ public class UpdateUI : MonoBehaviour
                 zoom.text = "Zoom: " + value;
                 break;
             case "focus":
-                focus.text = "Focus: " + value;
+                if (value == Mathf.Infinity)
+                    focus.text = "Focus: ∞";
+                else
+                    focus.text = "Focus: " + value;
                 break;
             case "aperture":
                 aperture.text = "Aperture: " + value;

@@ -1,0 +1,2 @@
+T:\Unity\GitHub\Photo-Ops\Photo Ops\obj\Debug\Assembly-CSharp.csprojAssemblyReference.cache
+T:\Unity\GitHub\Photo-Ops\Photo Ops\obj\Debug\Assembly-CSharp.csproj.CoreCompileInputs.cache

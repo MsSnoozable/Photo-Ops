@@ -4,7 +4,7 @@ using UnityEngine;
 
 public static class TextureReading
 {
-    static float CheckEnemyPercentOnScreen(Texture2D photoResult) {
+    public static float CheckEnemyPercentOnScreen(Texture2D photoResult) {
         float percent = 0;
         Color[] screen_pixels = photoResult.GetPixels();
 

@@ -14,7 +14,9 @@ class CustomPassTest : CustomPass
     // The render pipeline will ensure target setup and clearing happens in an performance manner.
     public Camera DSLR_cam;
 
-    protected override void Setup(ScriptableRenderContext renderContext, CommandBuffer cmd) { }
+    protected override void Setup(ScriptableRenderContext renderContext, CommandBuffer cmd) {
+
+    }
     static string ScreenShotName(int width, int height)
     {
         return string.Format("{0}/carbons/screen_{1}x{2}_{3}.png",
@@ -32,6 +34,7 @@ class CustomPassTest : CustomPass
 
     //todo: make sure "cleanup" works properly because memory leaks https://docs.unity3d.com/Packages/com.unity.render-pipelines.high-definition@10.4/manual/Custom-Pass-Scripting.html
     protected override void Cleanup() {
+
         int resolutionWidth = Screen.width;
         int resolutionHeight = Screen.height;
 

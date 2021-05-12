@@ -90,7 +90,7 @@ MonoBehaviour:
     m_Value: 1
   focusDistance:
     m_OverrideState: 1
-    m_Value: 11
+    m_Value: 8
     min: 0.1
   nearFocusStart:
     m_OverrideState: 1
@@ -130,12 +130,12 @@ MonoBehaviour:
     max: 16
   m_HighQualityFiltering:
     m_OverrideState: 1
-    m_Value: 1
+    m_Value: 0
   m_Resolution:
     m_OverrideState: 1
     m_Value: 1
   m_PhysicallyBased:
-    m_OverrideState: 1
+    m_OverrideState: 0
     m_Value: 0
 --- !u!114 &5118877823004374746
 MonoBehaviour:

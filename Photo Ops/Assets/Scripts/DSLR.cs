@@ -166,7 +166,7 @@ public class DSLR : MonoBehaviour
     public void ZoomChange()
     {
         zoomNotch += (int)Input.mouseScrollDelta.y;
-        zoomNotch = Mathf.Clamp(zoomNotch, 0, 5);
+        zoomNotch = Mathf.Clamp(zoomNotch, 0, zoomNotchValues.Length - 1);
         DSLR_cam.focalLength = zoomNotchValues[zoomNotch];
 
         updateUI.ChangeNotchValues("zoom", zoomNotchValues[zoomNotch]);
@@ -175,7 +175,7 @@ public class DSLR : MonoBehaviour
     public void FocusRingChange()
     {
         focusRingNotch += (int) Input.mouseScrollDelta.y;
-        focusRingNotch = Mathf.Clamp(focusRingNotch, 0, 5);
+        focusRingNotch = Mathf.Clamp(focusRingNotch, 0, focusRingValues.Length - 1);
         if (postProcess.TryGet<DepthOfField>(out var DoF))
             DoF.focusDistance.value = focusRingValues[focusRingNotch];
 
@@ -184,8 +184,8 @@ public class DSLR : MonoBehaviour
 
     public void ApertureChange()
     {
-        apertureNotch += (int)Input.mouseScrollDelta.y;
-        apertureNotch = Mathf.Clamp(apertureNotch, 0, 5);
+        apertureNotch += (int)Input.mouseScrollDelta.y; 
+        apertureNotch = Mathf.Clamp(apertureNotch, 0, apertureValues.Length - 1);
         DSLR_cam.GetComponent<HDAdditionalCameraData>().physicalParameters.aperture = apertureValues[apertureNotch];
 
         updateUI.ChangeNotchValues("aperture", apertureValues[apertureNotch]);
@@ -256,25 +256,26 @@ public class DSLR : MonoBehaviour
 
             //todo: check if enemy is collided with damage zone. Make script in damage zone to add an array of enemies
 
+            int resolutionWidth = Screen.width;
+            int resolutionHeight = Screen.height;
+
+            RenderTexture rt = new RenderTexture(resolutionWidth, resolutionHeight, 24);
+            DSLR_cam.targetTexture = rt;
+            Texture2D screenShot = new Texture2D(resolutionWidth, resolutionHeight, TextureFormat.RGB24, false);
+            DSLR_cam.Render();
+            RenderTexture.active = rt;
+
+            screenShot.ReadPixels(new Rect(0, 0, resolutionWidth, resolutionHeight), 0, 0);
+
+            float damage = TextureReading.CheckEnemyPercentOnScreen(screenShot);
+            damageEnemiesScript.TakeDamage(damage);
+
+            DSLR_cam.targetTexture = isLookingThroughVF ? null : Photo_Result;
+
+            RenderTexture.active = null; // JC: added to avoid errors
+
             if (isSavingShots)
             {
-                int resolutionWidth = Screen.width;
-                int resolutionHeight = Screen.height;
-
-                RenderTexture rt = new RenderTexture(resolutionWidth, resolutionHeight, 24);
-                DSLR_cam.targetTexture = rt;
-                Texture2D screenShot = new Texture2D(resolutionWidth, resolutionHeight, TextureFormat.RGB24, false);
-                DSLR_cam.Render();
-                RenderTexture.active = rt;
-
-                screenShot.ReadPixels(new Rect(0, 0, resolutionWidth, resolutionHeight), 0, 0);
-
-                if (isLookingThroughVF)
-                    DSLR_cam.targetTexture = null;
-                else
-                    DSLR_cam.targetTexture = Photo_Result;
-                RenderTexture.active = null; // JC: added to avoid errors
-
                 Destroy(rt);
                 byte[] bytes = screenShot.EncodeToPNG();
                 string filename = ScreenShotName(resolutionWidth, resolutionHeight);
@@ -296,7 +297,6 @@ public class DSLR : MonoBehaviour
         yield return new WaitForSeconds(flashDuration / 60);
         flash.enabled = false;
         customPass.SetActive(false);
-
         //todo: if an enemy is visisble by DSLR_cam then run screen space calc
     }
 }

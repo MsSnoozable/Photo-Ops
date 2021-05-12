@@ -6,6 +6,8 @@ using UnityEngine.UI;
 public class DamageEnemies : MonoBehaviour
 {
     public Slider EnemyHealthBar;
+    public GameObject enemy;
+
 
     // Start is called before the first frame update
     void Start()
@@ -21,6 +23,10 @@ public class DamageEnemies : MonoBehaviour
     public void TakeDamage (float damageDealt)
     {
         //Debug.Log("Health" + EnemyHealthBar.value);
-        EnemyHealthBar.value -= damageDealt;
+        float damagePercent = Mathf.InverseLerp(0, Screen.width * Screen.height, damageDealt);
+        EnemyHealthBar.value -= damagePercent * EnemyHealthBar.maxValue;
+
+        if (EnemyHealthBar.value <= 0)
+            Destroy(enemy);
     }
 }

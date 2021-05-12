@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 9093655406908185098}
   - component: {fileID: 9093655406908185102}
   - component: {fileID: 3881773386695588679}
-  m_Layer: 7
+  m_Layer: 6
   m_Name: Objective
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -96,8 +96,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rotationSpeed: 3.22
-  bobSpeed: 0.99
-  bobDistance: 0.01
+  bobSpeed: 1.05
+  bobHeight: 0.02
 --- !u!135 &3881773386695588679
 SphereCollider:
   m_ObjectHideFlags: 0
