@@ -1,5 +1,35 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1061546965
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1061546966}
+  m_Layer: 0
+  m_Name: Head Position
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1061546966
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1061546965}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.505, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1087940534}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1087940533
 GameObject:
   m_ObjectHideFlags: 0
@@ -31,6 +61,7 @@ Transform:
   m_LocalScale: {x: 0.66872, y: 0.9541714, z: 0.43295}
   m_Children:
   - {fileID: 3458153430526394385}
+  - {fileID: 1061546966}
   m_Father: {fileID: 6030098877812348153}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -274,22 +305,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56a9d896b5ae24d4ea2ea628c5e54a44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  head: {fileID: 5054341559296209063}
-  cam: {fileID: 6030098878414807798}
-  interactDistance: 2.5
-  crouchingHeight: 0.5
   IgnoreRaycastLayer:
     serializedVersion: 2
     m_Bits: 64
-  Body: {fileID: 6030098879307884286}
-  interactPopupText: {fileID: 6030098878112370425}
-  groundCheck: {fileID: 3458153430526394385}
-  moveSpeed: 10
-  jumpHeight: 0.5
-  mouseSensitivity: 2000
   groundLayer:
     serializedVersion: 2
     m_Bits: 8
+  interactPopupText: {fileID: 6030098878112370425}
+  groundCheck: {fileID: 3458153430526394385}
+  objectivePrefab: {fileID: 9093655406908185092, guid: 9d380892e2271614492e24f8a877ca52, type: 3}
+  cam: {fileID: 6030098878414807798}
+  head: {fileID: 5054341559296209063}
+  Body: {fileID: 1087940534}
+  headPosition: {fileID: 1061546966}
+  standMoveSpeed: 3.16
+  jumpHeight: 0.5
+  mouseSensitivity: 2000
+  interactDistance: 2.5
+  crouchHeight: 0.3
+  crouchMoveSpeed: 2.1
+  crouchScopeMoveSpeed: 0.87
+  scopeMoveSpeed: 2.04
 --- !u!1 &6030098878112370425
 GameObject:
   m_ObjectHideFlags: 0
@@ -964,7 +1000,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6420167626246098201}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.964, z: 0}
+  m_LocalPosition: {x: 0, y: -0.9964, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1087940534}
@@ -977,6 +1013,310 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 7102262211965570279}
     m_Modifications:
+    - target: {fileID: 5758976527556254054, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
+      propertyPath: customPasses.Array.size
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5758976527556254054, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
+      propertyPath: customPasses.Array.data[0]
+      value: Assembly-CSharp CustomPassTest
+      objectReference: {fileID: 0}
+    - target: {fileID: 5758976527556254054, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
+      propertyPath: customPasses.Array.data[1]
+      value: Unity.RenderPipelines.HighDefinition.Runtime UnityEngine.Rendering.HighDefinition.FullScreenCustomPass
+      objectReference: {fileID: 0}
+    - target: {fileID: 5758976527556254054, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
+      propertyPath: customPasses.Array.data[2]
+      value: Unity.RenderPipelines.HighDefinition.Runtime UnityEngine.Rendering.HighDefinition.DrawRenderersCustomPass
+      objectReference: {fileID: 0}
+    - target: {fileID: 5758976527556254054, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
+      propertyPath: customPasses.Array.data[3]
+      value: Unity.RenderPipelines.HighDefinition.Runtime UnityEngine.Rendering.HighDefinition.DrawRenderersCustomPass
+      objectReference: {fileID: 0}
+    - target: {fileID: 5758976527556254054, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
+      propertyPath: customPasses.Array.data[4]
+      value: Unity.RenderPipelines.HighDefinition.Runtime UnityEngine.Rendering.HighDefinition.FullScreenCustomPass
+      objectReference: {fileID: 0}
+    - target: {fileID: 5758976527556254054, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
+      propertyPath: customPasses.Array.data[0].m_Name
+      value: Save Screen to Texture
+      objectReference: {fileID: 0}
+    - target: {fileID: 5758976527556254054, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
+      propertyPath: customPasses.Array.data[1].m_Name
+      value: Yellow color wipe
+      objectReference: {fileID: 0}
+    - target: {fileID: 5758976527556254054, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
+      propertyPath: customPasses.Array.data[2].m_Name
+      value: Change Enemy
+      objectReference: {fileID: 0}
+    - target: {fileID: 5758976527556254054, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
+      propertyPath: customPasses.Array.data[3].m_Name
+      value: Change Enemy Face
+      objectReference: {fileID: 0}
+    - target: {fileID: 5758976527556254054, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
+      propertyPath: customPasses.Array.data[4].m_Name
+      value: Load Screen from Texture
+      objectReference: {fileID: 0}
+    - target: {fileID: 5758976527556254054, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
+      propertyPath: customPasses.Array.data[0].enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5758976527556254054, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
+      propertyPath: customPasses.Array.data[1].enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5758976527556254054, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
+      propertyPath: customPasses.Array.data[2].enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5758976527556254054, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
+      propertyPath: customPasses.Array.data[3].enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5758976527556254054, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
+      propertyPath: customPasses.Array.data[4].enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5758976527556254054, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
+      propertyPath: customPasses.Array.data[0].DSLR_cam
+      value: 
+      objectReference: {fileID: 6030098877945291012}
+    - target: {fileID: 5758976527556254054, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
+      propertyPath: customPasses.Array.data[0].m_Version
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5758976527556254054, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
+      propertyPath: customPasses.Array.data[1].m_Version
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5758976527556254054, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
+      propertyPath: customPasses.Array.data[2].m_Version
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5758976527556254054, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
+      propertyPath: customPasses.Array.data[3].m_Version
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5758976527556254054, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
+      propertyPath: customPasses.Array.data[4].m_Version
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5758976527556254054, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
+      propertyPath: customPasses.Array.data[0].clearFlags
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5758976527556254054, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
+      propertyPath: customPasses.Array.data[1].clearFlags
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5758976527556254054, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
+      propertyPath: customPasses.Array.data[2].clearFlags
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5758976527556254054, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
+      propertyPath: customPasses.Array.data[2].depthWrite
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5758976527556254054, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
+      propertyPath: customPasses.Array.data[2].shaderPass
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5758976527556254054, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
+      propertyPath: customPasses.Array.data[3].clearFlags
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5758976527556254054, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
+      propertyPath: customPasses.Array.data[3].depthWrite
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5758976527556254054, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
+      propertyPath: customPasses.Array.data[3].shaderPass
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5758976527556254054, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
+      propertyPath: customPasses.Array.data[4].clearFlags
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5758976527556254054, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
+      propertyPath: customPasses.Array.data[0].passFoldout
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5758976527556254054, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
+      propertyPath: customPasses.Array.data[1].passFoldout
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5758976527556254054, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
+      propertyPath: customPasses.Array.data[2].passFoldout
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5758976527556254054, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
+      propertyPath: customPasses.Array.data[3].passFoldout
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5758976527556254054, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
+      propertyPath: customPasses.Array.data[4].passFoldout
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5758976527556254054, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
+      propertyPath: customPasses.Array.data[2].filterFoldout
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5758976527556254054, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
+      propertyPath: customPasses.Array.data[3].filterFoldout
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5758976527556254054, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
+      propertyPath: customPasses.Array.data[2].renderQueueType
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5758976527556254054, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
+      propertyPath: customPasses.Array.data[2].rendererFoldout
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5758976527556254054, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
+      propertyPath: customPasses.Array.data[2].sortingCriteria
+      value: 59
+      objectReference: {fileID: 0}
+    - target: {fileID: 5758976527556254054, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
+      propertyPath: customPasses.Array.data[3].renderQueueType
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5758976527556254054, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
+      propertyPath: customPasses.Array.data[3].rendererFoldout
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5758976527556254054, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
+      propertyPath: customPasses.Array.data[3].sortingCriteria
+      value: 59
+      objectReference: {fileID: 0}
+    - target: {fileID: 5758976527556254054, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
+      propertyPath: customPasses.Array.data[1].fetchColorBuffer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5758976527556254054, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
+      propertyPath: customPasses.Array.data[1].materialPassName
+      value: Custom Pass 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5758976527556254054, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
+      propertyPath: customPasses.Array.data[2].layerMask.m_Bits
+      value: 128
+      objectReference: {fileID: 0}
+    - target: {fileID: 5758976527556254054, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
+      propertyPath: customPasses.Array.data[2].overrideMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: b66fcbba726bf654fb548a28bf5700ab, type: 2}
+    - target: {fileID: 5758976527556254054, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
+      propertyPath: customPasses.Array.data[3].layerMask.m_Bits
+      value: 256
+      objectReference: {fileID: 0}
+    - target: {fileID: 5758976527556254054, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
+      propertyPath: customPasses.Array.data[3].materialPassName
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5758976527556254054, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
+      propertyPath: customPasses.Array.data[3].overrideMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: 938d8e04fccb80b4fa441899cd7f5609, type: 2}
+    - target: {fileID: 5758976527556254054, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
+      propertyPath: customPasses.Array.data[4].fetchColorBuffer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5758976527556254054, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
+      propertyPath: customPasses.Array.data[4].materialPassName
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5758976527556254054, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
+      propertyPath: customPasses.Array.data[0].targetColorBuffer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5758976527556254054, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
+      propertyPath: customPasses.Array.data[0].targetDepthBuffer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5758976527556254054, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
+      propertyPath: customPasses.Array.data[1].materialPassIndex
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5758976527556254054, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
+      propertyPath: customPasses.Array.data[1].targetColorBuffer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5758976527556254054, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
+      propertyPath: customPasses.Array.data[1].targetDepthBuffer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5758976527556254054, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
+      propertyPath: customPasses.Array.data[2].targetColorBuffer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5758976527556254054, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
+      propertyPath: customPasses.Array.data[2].targetDepthBuffer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5758976527556254054, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
+      propertyPath: customPasses.Array.data[3].targetColorBuffer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5758976527556254054, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
+      propertyPath: customPasses.Array.data[3].targetDepthBuffer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5758976527556254054, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
+      propertyPath: customPasses.Array.data[4].materialPassIndex
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5758976527556254054, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
+      propertyPath: customPasses.Array.data[4].targetColorBuffer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5758976527556254054, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
+      propertyPath: customPasses.Array.data[4].targetDepthBuffer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5758976527556254054, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
+      propertyPath: customPasses.Array.data[2].overrideDepthState
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5758976527556254054, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
+      propertyPath: customPasses.Array.data[3].overrideDepthState
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5758976527556254054, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
+      propertyPath: customPasses.Array.data[2].depthCompareFunction
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 5758976527556254054, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
+      propertyPath: customPasses.Array.data[3].depthCompareFunction
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 5758976527556254054, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
+      propertyPath: customPasses.Array.data[1].fullscreenPassMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: f255f3621ec3611448af2302618482a1, type: 2}
+    - target: {fileID: 5758976527556254054, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
+      propertyPath: customPasses.Array.data[3].fullscreenPassMaterial
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5758976527556254054, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
+      propertyPath: customPasses.Array.data[4].fullscreenPassMaterial
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5758976527556254054, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
+      propertyPath: customPasses.Array.data[2].overrideMaterialPassName
+      value: ForwardOnly
+      objectReference: {fileID: 0}
+    - target: {fileID: 5758976527556254054, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
+      propertyPath: customPasses.Array.data[3].overrideMaterialPassName
+      value: ForwardOnly
+      objectReference: {fileID: 0}
+    - target: {fileID: 5758976527556254054, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
+      propertyPath: customPasses.Array.data[2].overrideMaterialPassIndex
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5758976527556254054, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
+      propertyPath: customPasses.Array.data[3].overrideMaterialPassIndex
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5758976528628497988, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
       propertyPath: updateUI
       value: 
@@ -986,9 +1326,25 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 6030098878414807798}
     - target: {fileID: 5758976528628497988, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
+      propertyPath: isSavingShots
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5758976528628497988, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
       propertyPath: VF_Toggle_Clip
       value: 
       objectReference: {fileID: 7400000, guid: 2c1aea33c2600ca42968d8a956347d79, type: 2}
+    - target: {fileID: 5758976528628497988, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
+      propertyPath: startingApertureValue
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5758976528628497988, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
+      propertyPath: startingFocusRingValue
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 5758976528628497988, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
+      propertyPath: startingZoomNotchValue
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 5758976528628497991, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -1051,9 +1407,9 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
---- !u!4 &6030098879307884286 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 5758976527229484471, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
+--- !u!20 &6030098877945291012 stripped
+Camera:
+  m_CorrespondingSourceObject: {fileID: 5758976528022698573, guid: ad7a1d1ae3968094ab48571e9260d046, type: 3}
   m_PrefabInstance: {fileID: 2036973215031745353}
   m_PrefabAsset: {fileID: 0}
 --- !u!4 &6030098878546928910 stripped

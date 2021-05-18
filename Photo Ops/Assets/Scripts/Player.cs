@@ -5,31 +5,41 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     CharacterController cc;
-    [SerializeField] GameObject head;
-    [SerializeField] Camera cam;
-    [SerializeField] float interactDistance;
-    [SerializeField] float crouchingHeight;
     private float standingHeight;
+
     [SerializeField] LayerMask IgnoreRaycastLayer;
-    [SerializeField] Transform Body;
+    [SerializeField] LayerMask groundLayer;
     [SerializeField] GameObject interactPopupText;
+
+    [Header("References")]
     [SerializeField] Transform groundCheck;
+    [SerializeField] GameObject objectivePrefab;
+    [SerializeField] Camera cam;
+    [SerializeField] GameObject head;
+    [SerializeField] Transform Body;
+    [SerializeField] Transform headPosition;
 
     [Header("Values")]
-    public float moveSpeed;
+    public float standMoveSpeed;
     public float jumpHeight;
     public float mouseSensitivity;
+    [SerializeField] float interactDistance;
+    [SerializeField] float crouchHeight;
+    [SerializeField] float crouchMoveSpeed;
+    [SerializeField] float crouchScopeMoveSpeed;
+    [SerializeField] float scopeMoveSpeed;
+    [SerializeField] DSLR equippedCamera;
 
-    private float fallSpeed = -10;
+    bool isCrouched = false;
+    bool isScoped = false;
+
+    //internal values
+    bool hasObjective; 
+    float fallSpeed = -10;
     bool isGrounded;
     Vector3 currentVerticalVelocity;
-
-    [SerializeField] LayerMask groundLayer;
-
-    //the distance from the ground before you can execute another jump
-    float jumpDistanceLenience = 0.4f;
-
     float xRotation = 0f;
+    float jumpDistanceLenience = 0.4f; //the distance from the ground before you can execute another jump
 
     // Start is called before the first frame update
     void Start()
@@ -49,20 +59,38 @@ public class Player : MonoBehaviour
         Interact();
         Gravity();
         Crouch();
+        DropObjective();
+    }
+
+    void DropObjective ()
+    {
+        if (Input.GetButtonDown("Drop") && hasObjective)
+        {
+            hasObjective = false;
+            Vector3 instantiatePos = new Vector3(transform.localPosition.x - 2, transform.localPosition.y, transform.localPosition.z);
+
+            Instantiate(objectivePrefab, instantiatePos, Quaternion.Euler(90, 0, 0));
+        }
     }
 
     void Crouch ()
     {
-        //if (Input.GetButton("Crouch"))
-        //{
-        //    Body.localScale = new Vector3(Body.localScale.x, standingHeight, Body.localScale.z);
-        //    Body.gameObject.GetComponent<CapsuleCollider>().height = 1;
-        //}
-        //else if (Input.GetButtonUp("Crouch"))
-        //{
-        //    Body.localScale = new Vector3(Body.localScale.x, crouchingHeight, Body.localScale.z);
-        //    Body.gameObject.GetComponent<CapsuleCollider>().height = 1;
-        //}
+        if (Input.GetButton("Crouch")) //crouch
+        {
+            Body.localScale = new Vector3(Body.localScale.x, crouchHeight, Body.localScale.z);
+            Body.gameObject.GetComponent<CapsuleCollider>().height = 1;
+            cc.height = 1;
+            head.transform.position = headPosition.position;
+            isCrouched = true;
+        }
+        else //stand
+        {
+            Body.localScale = new Vector3(Body.localScale.x, standingHeight, Body.localScale.z);
+            Body.gameObject.GetComponent<CapsuleCollider>().height = 2;
+            cc.height = 2;
+            head.transform.position = headPosition.position;
+            isCrouched = false;
+        }
     }
 
     void Gravity()
@@ -82,12 +110,19 @@ public class Player : MonoBehaviour
         float horizontal = Input.GetAxis("Horizontal");
         float vertical = Input.GetAxis("Vertical");
 
-        cc.Move(
-            moveSpeed *
-            Time.deltaTime *
-           (horizontal * transform.right +
-            vertical * transform.forward)
-         );
+        float moveSpeed;
+        isScoped = equippedCamera.isLookingThroughVF;
+
+        if (isCrouched && isScoped)
+            moveSpeed = crouchScopeMoveSpeed;
+        else if (isCrouched)
+            moveSpeed = crouchMoveSpeed;
+        else if (isScoped)
+            moveSpeed = scopeMoveSpeed;
+        else
+            moveSpeed = standMoveSpeed;
+
+        cc.Move(moveSpeed * Time.deltaTime * (horizontal * transform.right + vertical * transform.forward));
     }
 
     void LookAround ()
@@ -109,11 +144,12 @@ public class Player : MonoBehaviour
         if (Physics.Raycast(cam.transform.position, cam.transform.forward, out hit, interactDistance, IgnoreRaycastLayer))
         {
             //todo: display interactable on GUI
-            if (hit.collider.name == "Objective")
+            if (hit.collider.gameObject == objectivePrefab)
             {
+                Debug.Log("check");
                 if (Input.GetButtonDown("Interact"))
                 {
-                    hit.collider.gameObject.GetComponent<Objective>().PickUp();
+                    hasObjective = hit.collider.gameObject.GetComponent<Objective>().PickUp();
                 }
                 interactPopupText.SetActive(true);
             }

@@ -16,7 +16,7 @@ public class DSLR : MonoBehaviour
     
     bool isTakingPicture = false;
     bool isEnemyVisible = false;
-    bool isLookingThroughVF = false;
+    [HideInInspector] public bool isLookingThroughVF = false;
     [SerializeField] bool isSavingShots;
 
     public AudioSource audioSource;
@@ -40,7 +40,11 @@ public class DSLR : MonoBehaviour
     [SerializeField] float[] zoomNotchValues;
     [SerializeField] float[] focusRingValues; 
     [SerializeField] float[] apertureValues;
-    
+
+    [SerializeField] int startingZoomNotchValue;
+    [SerializeField] int startingFocusRingValue;
+    [SerializeField] int startingApertureValue;
+
     //saves where the current notch is on
     int apertureNotch;
     int focusRingNotch;
@@ -57,12 +61,30 @@ public class DSLR : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        //ResizeCameraOnScreen();
         SetInitialCameraNotches();
         Enemy_Renderer = Enemy.GetComponent<Renderer>();
 
         //initialize mesh
         damageZone.GetComponent<MeshFilter>().mesh = new Mesh();
         ChangeDamageZone();
+
+    }
+
+    //todo: doesn't work
+    //changes dslr to have a 3:2 ratio
+    void ResizeCameraOnScreen()
+    {
+        Rect camRect = DSLR_cam.rect;
+        float shrinkAmount = 1 - (5 / 64);
+        Debug.Log(shrinkAmount);
+        camRect.xMax = shrinkAmount;
+        camRect.xMin = shrinkAmount;
+
+        DSLR_cam.rect = camRect;
+
+        //DSLR_cam.ResetAspect();
+        //Debug.Log(DSLR_cam.aspect);
     }
 
     //when the player dies drop the camera that has all the players you killed
@@ -70,17 +92,11 @@ public class DSLR : MonoBehaviour
 
     }
 
-    bool CheckIfEnemyIsFacingCamera ()
-    {
-        //-90 > angle of front ray cast > 90
-        return true;
-    }
-
     void SetInitialCameraNotches ()
     {
-        apertureNotch = 2;
-        focusRingNotch = 4;
-        zoomNotch = 6;
+        apertureNotch = startingApertureValue;
+        focusRingNotch = startingFocusRingValue;
+        zoomNotch = startingZoomNotchValue;
 
         ApertureChange();
         ZoomChange();
@@ -267,8 +283,10 @@ public class DSLR : MonoBehaviour
 
             screenShot.ReadPixels(new Rect(0, 0, resolutionWidth, resolutionHeight), 0, 0);
 
-            float damage = TextureReading.CheckEnemyPercentOnScreen(screenShot);
+            //todo: change this part for multiple enemies in a shot
+            var (damage, reason) = TextureReading.CheckEnemyPercentOnScreen(screenShot, Color.white, Color.black);
             damageEnemiesScript.TakeDamage(damage);
+            Debug.Log(reason);
 
             DSLR_cam.targetTexture = isLookingThroughVF ? null : Photo_Result;
 

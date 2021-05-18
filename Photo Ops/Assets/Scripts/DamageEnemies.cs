@@ -23,6 +23,7 @@ public class DamageEnemies : MonoBehaviour
     public void TakeDamage (float damageDealt)
     {
         //Debug.Log("Health" + EnemyHealthBar.value);
+        //todo: do math here or in texture reading?????
         float damagePercent = Mathf.InverseLerp(0, Screen.width * Screen.height, damageDealt);
         EnemyHealthBar.value -= damagePercent * EnemyHealthBar.maxValue;
 

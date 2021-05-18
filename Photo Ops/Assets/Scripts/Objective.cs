@@ -20,8 +20,9 @@ public class Objective : MonoBehaviour
     }
 
     //todo: calls from player script, adds to that players inventory and despawns it.
-    public void PickUp ()
+    public bool PickUp ()
     {
         Destroy(this.gameObject);
+        return true;
     }
 }
